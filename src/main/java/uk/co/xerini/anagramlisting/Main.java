@@ -17,7 +17,8 @@ public class Main {
 		AnagramLister lister = new AnagramLister(new File("english2.txt"));
 		
 		List<String> anagrams = lister.listAnagrams(word);
-		for(String str : anagrams) System.out.println(str);
+		if(anagrams.isEmpty()) System.out.println("No anagrams found..");
+		else for(String str : anagrams) System.out.println(str);
 		
 		userInput.close();
 	}

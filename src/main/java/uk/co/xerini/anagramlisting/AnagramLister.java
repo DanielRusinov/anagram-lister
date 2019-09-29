@@ -24,10 +24,19 @@ public class AnagramLister {
 		this.file = file;
 	}
 	
-	public List<String> listAnagrams(String word) throws IOException {
+	/**
+	Converts a input string to character array and sorts it.
+	Then it searches for a word with the same length from the file,
+	converts it to character array, sorts it and then compares the 
+	string value of both arrays. 
+	
+	@param input 	console input
+	@return 		list of all anagrams of the input from the file
+	*/	
+	public List<String> listAnagrams(String input) throws IOException {
 		
-		char[] temp1 = word.toCharArray();
-		Arrays.sort(temp1);
+		char[] inputArray = input.toCharArray();
+		Arrays.sort(inputArray);
 		
 		BufferedReader fileReader = new BufferedReader(new FileReader(file));
 		String lineInFile = null;
@@ -35,17 +44,15 @@ public class AnagramLister {
 		ArrayList<String> anagrams = new ArrayList<>();
 		
 		while((lineInFile = fileReader.readLine()) != null){
-			if(lineInFile.equals(word)) continue;
-			else if(word.length() == lineInFile.length()){
-				char[] temp2 = lineInFile.toCharArray();
-				Arrays.sort(temp2);
+			if(lineInFile.equals(input)) continue;
+			else if(input.length() == lineInFile.length()){
+				char[] lineInFileArray = lineInFile.toCharArray();
+				Arrays.sort(lineInFileArray);
 				
-				if(String.valueOf(temp1).equals(String.valueOf(temp2)))
+				if(String.valueOf(inputArray).equals(String.valueOf(lineInFileArray)))
 					anagrams.add(lineInFile);
 			}
 		}
-		
-		if(anagrams.isEmpty()) System.out.println("No anagrams found..");
 		
 		fileReader.close();
 		
