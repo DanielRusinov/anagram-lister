@@ -1,29 +1,26 @@
 package main.java.uk.co.xerini.anagramlisting;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+
+import com.google.common.collect.ImmutableList; 
 
 public class AnagramLister {
 	
-	private File file;
-
-	public AnagramLister(File file) {
-		this.file = file;
-	}
-
-	public File getFile() {
-		return file;
-	}
-
-	public void setFile(File file) {
-		this.file = file;
-	}
+	private final ImmutableList<String> validWords;
+	private final HashMap<String, List<String>> resultMap = new HashMap<>();
 	
+	public AnagramLister(List<String> list) {
+		this.validWords = ImmutableList.copyOf(list);
+	}
+
+	public List<String> getList() {
+		return validWords;
+	}
+
 	/**
 	Converts a input string to character array and sorts it.
 	Then it searches for a word with the same length from the file,
@@ -34,28 +31,29 @@ public class AnagramLister {
 	@return 		list of all anagrams of the input from the file
 	*/	
 	public List<String> listAnagrams(String input) throws IOException {
-		
-		char[] inputArray = input.toCharArray();
-		Arrays.sort(inputArray);
-		
-		BufferedReader fileReader = new BufferedReader(new FileReader(file));
-		String lineInFile = null;
-		
-		ArrayList<String> anagrams = new ArrayList<>();
-		
-		while((lineInFile = fileReader.readLine()) != null){
-			if(lineInFile.equals(input)) continue;
-			else if(input.length() == lineInFile.length()){
-				char[] lineInFileArray = lineInFile.toCharArray();
-				Arrays.sort(lineInFileArray);
-				
-				if(String.valueOf(inputArray).equals(String.valueOf(lineInFileArray)))
-					anagrams.add(lineInFile);
+
+		if(resultMap.containsKey(input)) {
+			return resultMap.get(input);
+		} else {
+			char[] inputArray = input.toCharArray();
+			Arrays.sort(inputArray);
+			
+			ArrayList<String> anagrams = new ArrayList<>();
+			
+			for(String word : validWords) {
+				if(word.equals(input)) continue;
+				else if(input.length() == word.length()){
+					char[] wordArray = word.toCharArray();
+					Arrays.sort(wordArray);
+					
+					if(String.valueOf(inputArray).equals(String.valueOf(wordArray)))
+						anagrams.add(word);
+				}
 			}
+			
+			resultMap.put(input, anagrams);
+			
+			return anagrams;
 		}
-		
-		fileReader.close();
-		
-		return anagrams;
 	}
 }
